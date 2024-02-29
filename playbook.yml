@@ -1,0 +1,39 @@
+---
+
+- name: Update servers, Install nginx and clone Github repo
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Update packages
+      yum:
+        update_cache: yes
+
+    - name: Install nginx
+      yum:
+        name: nginx
+        state: present
+
+    - name: Ensure nginx service is running
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+
+    - name: Delete default index.html
+      file:
+        path: /usr/share/nginx/html/index.html
+        state: absent
+
+    - name: Install git package
+      yum:
+        name: git
+        state: present
+
+    - name: Clone github repo
+      git:
+        repo: https://github.com/AzeematRaji/Alt-School-Assignment-3.git
+        dest: /usr/share/nginx/html
+        force: yes
+
